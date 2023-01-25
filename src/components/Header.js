@@ -28,8 +28,7 @@ const socials = [
 ];
 
 const Header = () => {
-  const prevScrollPositionRef = useRef(null);
-  const [scrollDirection, setScrollDirection] = useState('UP');
+  const headerRef = useRef(null);
 
   const handleClick = (e) => {
     e.preventDefault();
@@ -44,21 +43,26 @@ const Header = () => {
     }
   };
 
-  const handleScroll = (e) => {
-    const currentY = window.scrollY;
-    if (currentY > prevScrollPositionRef.current) {
-      setScrollDirection('DOWN');
-    }
-    if (currentY < prevScrollPositionRef.current) {
-      setScrollDirection('UP');
-    }
-
-    prevScrollPositionRef.current = window.scrollY;
-  };
-
   useEffect(() => {
+    let prevScrollPosition = window.scrollY;
+
+    const handleScroll = () => {
+      const currentScrollPosition = window.scrollY;
+
+      if (!headerRef.current) {
+        return;
+      }
+      if (prevScrollPosition > currentScrollPosition) {
+        headerRef.current.style.transform = 'translateY(0)';
+      }
+      if (prevScrollPosition < currentScrollPosition) {
+        headerRef.current.style.transform = 'translateY(-200px)';
+      }
+      prevScrollPosition = currentScrollPosition;
+    };
+
     window.addEventListener('scroll', handleScroll);
-    prevScrollPositionRef.current = window.scrollY;
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
@@ -76,14 +80,14 @@ const Header = () => {
       transitionTimingFunction='ease-in-out'
       backgroundColor='#18181b'
       zIndex={'10'}
-      transform={scrollDirection === 'DOWN' ? 'translateY(-200px)' : 'translateY(0)'}
+      ref={headerRef}
     >
       <Box color='white' maxWidth='1280px' margin='0 auto'>
         <HStack px={16} py={4} justifyContent='space-between' alignItems='center'>
           <nav>
             <HStack>
               {socials.map((social) => (
-                <a href={social.url} key={social.url}>
+                <a href={social.url} key={social.url} target='_blank' rel='noopener noreferrer'>
                   <FontAwesomeIcon icon={social.icon} size='2x' />
                 </a>
               ))}
