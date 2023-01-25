@@ -25,7 +25,6 @@ const LandingSection = () => {
   const formik = useFormik({
     initialValues: { firstName: '', email: '', type: '', comment: '' },
     onSubmit: (values) => {
-      console.log('Submit:', values);
       submit('https://www.CIA.com/', values);
     },
     validationSchema: Yup.object().shape({

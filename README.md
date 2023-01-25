@@ -1,4 +1,4 @@
-## Hi! This is my porfolio project form Meta-frontend course
+## Hi! This is porfolio project form Meta-frontend course
 
 #### Tools used
 

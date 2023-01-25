@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { faGithub, faLinkedin, faMedium, faStackOverflow } from '@fortawesome/free-brands-svg-icons';
@@ -28,6 +28,9 @@ const socials = [
 ];
 
 const Header = () => {
+  const prevScrollPositionRef = useRef(null);
+  const [scrollDirection, setScrollDirection] = useState('UP');
+
   const handleClick = (e) => {
     e.preventDefault();
     const anchor = e.target.name;
@@ -41,6 +44,26 @@ const Header = () => {
     }
   };
 
+  const handleScroll = (e) => {
+    const currentY = window.scrollY;
+    if (currentY > prevScrollPositionRef.current) {
+      setScrollDirection('DOWN');
+    }
+    if (currentY < prevScrollPositionRef.current) {
+      setScrollDirection('UP');
+    }
+
+    prevScrollPositionRef.current = window.scrollY;
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    prevScrollPositionRef.current = window.scrollY;
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
     <Box
       position='fixed'
@@ -49,9 +72,11 @@ const Header = () => {
       right={0}
       translateY={0}
       transitionProperty='transform'
-      transitionDuration='.3s'
+      transitionDuration='.5s'
       transitionTimingFunction='ease-in-out'
       backgroundColor='#18181b'
+      zIndex={'10'}
+      transform={scrollDirection === 'DOWN' ? 'translateY(-200px)' : 'translateY(0)'}
     >
       <Box color='white' maxWidth='1280px' margin='0 auto'>
         <HStack px={16} py={4} justifyContent='space-between' alignItems='center'>
